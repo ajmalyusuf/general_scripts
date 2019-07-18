@@ -1,0 +1,10 @@
+{% with messages = get_flashed_messages() %}
+     {% if messages %}
+        {% for message in messages %}
+           <div id="page_alert" class="alert alert-info alert-small">
+           <button type="button" class="close" aria-label="close"><p>&times;</p></button>
+           <p id="flash_message">{{ message }}</p>
+           </div>
+        {% endfor %}
+     {% endif %}
+{% endwith %}

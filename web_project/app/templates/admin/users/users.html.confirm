@@ -1,0 +1,116 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block body %}
+<div class="container-fluid text-center">
+<div class="center">
+  <p id="flash_message">{{ utils.flashed_messages() }}</p>
+  <h1>Users</h1>
+  <br/>
+  {% if users %}
+    <table class="table table-sm table-responsive w-auto">
+      <thead>
+        <tr>
+          <th class="textleft"> # </th>
+          <th class="textleft"> Username </th>
+          <th class="textleft"> First Name </th>
+          <th class="textleft"> Last Name </th>
+          <th class="textleft"> Email ID </th>
+          <th class="textleft"> Role </th>
+          <th class="textcenter"> Edit </th>
+          <th class="textcenter"> Delete </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr id="row_{{ user.id }}">
+            <td class="textleft"> {{ loop.index }} </td>
+            <td class="textleft"> {{ user.username }} </td>
+            <td class="textleft"> {{ user.first_name }} </td>
+            <td class="textleft"> {{ user.last_name }} </td>
+            <td class="textleft"> {{ user.email }} </td>
+            <td class="textleft">
+              {% if user.is_admin > 0 %}
+                Admin
+              {% else %}
+                Regular
+              {% endif %}
+            </td>
+            <td class="textcenter" style="width: 10px">
+              <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-info btn-xs">
+                <span class="glyphicon glyphicon-edit"></span> Edit 
+              </a>
+            </td>
+            <td class="textcenter" style="width: 10px">
+              <!-- plain delete
+              <a href="{{ url_for('admin.delete_user', id=user.id) }}" class="btn btn-danger btn-xs">
+              -->
+              <!--
+              <a data-id="{{ user.id }}" onclick="ConfirmDelete(this)" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-trash"></span> Delete 
+              </a> -->
+              <a class="btn btn-large btn-primary" data-toggle="confirmation" data-title="Delete?" href="{{ url_for('admin.delete_user', id=user.id) }}">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <h3> No users have been added. </h3>
+    <hr class="intro-divider">
+  {% endif %}
+    <a href="{{ url_for('admin.add_user') }}" class="btn btn-default btn-md">
+      <span class="glyphicon glyphicon-plus"></span> Add User
+    </a>
+</div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align:center;">
+        <h4 class="modal-title" id="deleteModalLabel">Are you sure you want to delete?</h4>
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="Delete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('[data-toggle=confirmation]').confirmation({
+  rootSelector: '[data-toggle=confirmation]',
+  // other options
+});
+
+function ConfirmDelete(elem) {
+    var deleteId = $(elem).attr('data-id');
+    var confirm_ret = confirm('Are you sure you want to delete?');
+    if ( confirm_ret == true ) {
+        $.ajax({
+            url: '/admin/users/delete/' + deleteId,
+            data: {
+                id: deleteId
+            },
+            type: 'POST',
+            success: function(response){
+                var item = "#row_" + deleteId
+                $(item).fadeTo(400, 0, function () {
+                    $(this).remove();
+                });
+                $("#flash_message").html("Successfully deleted the user")
+            },
+            error: function(error){
+                console.log(error);
+            }
+        });
+    }
+}
+</script>
+
+{% endblock %}
+

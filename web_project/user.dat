@@ -1,0 +1,5 @@
+from app.models import User
+from app import db
+user=User(email='aaa@myweb.com',username='aaa',password='aaa',is_admin=False,first_name='aaa',last_name='aaa')
+db.session.add(user)
+db.session.commit()

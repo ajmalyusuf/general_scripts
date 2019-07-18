@@ -1,0 +1,58 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block body %}
+<div class="container-fluid text-center">
+<div class="center">
+  <div id="message-container">
+  {% include 'includes/_messages.html' %}
+  </div>
+  <h1>{{ title }}</h1>
+  <br/>
+  {% if scripts %}
+    <table class="table table-sm table-responsive w-auto">
+      <thead>
+        <tr>
+          <th class="textleft"> # </th>
+          <th class="textleft"> Name </th>
+          <th class="textleft"> Path </th>
+          <th class="textleft"> Args </th>
+          <th class="textcenter"> Edit </th>
+          <th class="textcenter"> Delete </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for script in scripts %}
+          <tr id="row_{{ script.id }}">
+            <td class="textleft"> {{ loop.index }} </td>
+            <td class="textleft"> {{ script.name }} </td>
+            <td class="textleft"> {{ script.path }} </td>
+            <td class="textleft"> Some Arguments </td>
+            <td class="textcenter" style="width: 10px">
+              <a href="{{ url_for('admin.edit_script', id=script.id) }}" class="btn btn-info btn-xs">
+                <span class="glyphicon glyphicon-edit"></span> Edit 
+              </a>
+            </td>
+            <td class="textcenter" style="width: 10px">
+              <a data-id="{{ script.id }}" onclick="ConfirmDelete(this)" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-trash"></span> Delete 
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <h3> No {{ entity|lower }} have been added. </h3>
+    <hr class="intro-divider">
+  {% endif %}
+    <a href="{{ url_for('admin.add_script') }}" class="btn btn-default btn-md">
+      <span class="glyphicon glyphicon-plus"></span> Add Script
+    </a>
+</div>
+</div>
+
+{% include 'includes/_delete_confirm.html' %}
+
+{% endblock %}
+

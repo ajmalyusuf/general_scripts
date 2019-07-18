@@ -1,0 +1,74 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <br/>
+        {{ utils.flashed_messages() }}
+        <br/>
+        <h1 style="text-align:center;">Users</h1>
+        {% if users %}
+          <div class="center">
+            <table class="table table-sm table-responsive w-auto">
+              <thead>
+                <tr>
+                  <th> # </th>
+                  <th> Username </th>
+                  <th> First Name </th>
+                  <th> Last Name </th>
+                  <th> Email ID </th>
+                  <th class="textcenter"> Role </th>
+                  <th class="textcenter"> Edit </th>
+                  <th class="textcenter"> Delete </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for user in users %}
+                <tr>
+                  <td> {{ loop.index }} </td>
+                  <td> {{ user.username }} </td>
+                  <td> {{ user.first_name }} </td>
+                  <td> {{ user.last_name }} </td>
+                  <td> {{ user.email }} </td>
+                  <td>
+                      {% if user.is_admin > 0 %}
+                      Admin
+                      {% else %}
+                      Regular
+                      {% endif %}
+                  </td>
+                  <td class="textcenter">
+                    <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-info btn-xs">
+                      <span class="glyphicon glyphicon-edit"></span> Edit 
+                    </a>
+                  </td>
+                  <td class="textcenter">
+                    <a href="{{ url_for('admin.delete_user', id=user.id) }}" class="btn btn-danger btn-xs">
+                      <span class="glyphicon glyphicon-trash"></span> Delete 
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        <div style="text-align: center">
+        {% else %}
+          <div style="text-align: center">
+            <h3> No users have been added. </h3>
+            <hr class="intro-divider">
+          </div>
+        {% endif %}
+          <a href="{{ url_for('admin.add_user') }}" class="btn btn-default btn-lg">
+            <i class="fa fa-plus"></i>
+            Add User
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block body %}
+<div class="container-fluid text-center">
+<div class="center">
+  <div id="message-container">
+  {% include 'includes/_messages.html' %}
+  </div>
+  <h1>Steps for the Task:</h1>
+  <h3 class="green">{{ task.name }}</h3>
+  <br/>
+  {% if steps %}
+    <table class="table table-sm table-responsive w-auto">
+      <thead>
+        <tr>
+          <th class="textleft"> # </th>
+          <th class="textleft"> Name </th>
+          <th class="textleft"> Step Action </th>
+          <!--<th class="textleft"> Action String </th>-->
+          <th class="textleft"> Filename Mask </th>
+          <th class="textcenter"> Edit </th>
+          <th class="textcenter"> Delete </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for step in steps %}
+          <tr id="row_{{ step.id }}">
+            <td class="textleft"> {{ loop.index }} </td>
+            <td class="textleft"> {{ step.name }} </td>
+            <td class="textleft"> {{ step.step_action }} </td>
+            <!--<td class="textleft"> {{ step.action_string }} </td>-->
+            <td class="textleft"> {{ step.filename_mask }} </td>
+            <td class="textcenter">
+              <a href="{{ url_for('admin.edit_step', id=step.id) }}" class="btn btn-info btn-xs">
+                <span class="glyphicon glyphicon-edit"></span> Edit
+              </a>
+            </td>
+            <td class="textcenter" style="width: 10px">
+              <a data-id="{{ step.id }}" onclick="ConfirmDelete(this)" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-trash"></span> Delete
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <h3> No steps have been added. </h3>
+    <hr class="intro-divider">
+  {% endif %}
+    <a href="{{ url_for('admin.add_step', task_id=task.id) }}" class="btn btn-default btn-md">
+      <span class="glyphicon glyphicon-plus"></span> Add Step
+    </a>
+</div>
+</div>
+
+{% include 'includes/_delete_confirm.html' %}
+
+{% endblock %}

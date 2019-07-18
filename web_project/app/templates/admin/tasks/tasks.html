@@ -1,0 +1,77 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block body %}
+<div class="container-fluid text-center">
+<div class="center">
+  <div id="message-container">
+  {% include 'includes/_messages.html' %}
+  </div>
+  <h1>Tasks</h1>
+  <br/>
+  {% if tasks %}
+    <table class="table table-sm table-responsive w-auto">
+      <thead>
+        <tr>
+          <th class="textleft"> # </th>
+          <th class="textleft"> Name </th>
+          <th class="textleft"> Service </th>
+          <th class="textleft"> Component </th>
+          <th class="textleft"><span class="glyphicon glyphicon-check" style="color:white;"></span> Steps </th>
+          <th class="textleft"><span class="glyphicon glyphicon-check" style="color:white;"></span> Expression </th>
+          <th class="textcenter"> Edit </th>
+          <th class="textcenter"> Delete </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+          <tr id="row_{{ task.id }}">
+            <td class="textleft"> {{ loop.index }} </td>
+            <td class="textleft"> {{ task.name }} </td>
+            <td class="textleft"> {{ task.service }} </td>
+            <td class="textleft"> {{ task.component }} </td>
+            <td class="textleft">
+              <a href="{{ url_for('admin.list_steps', task_id=task.id) }}">
+              {% if task.steps and task.steps.count() > 0 %}
+                <span class="glyphicon glyphicon-list" style="color:green;"></span> Steps({{ task.steps.count() }})
+              {% else %}
+                <span class="glyphicon glyphicon-wrench" style="color:red;"></span> Steps(0)
+              {% endif %}
+              </a>
+            </td>
+            <td class="textleft">
+              <a href="#">
+              {% if task.conditions and task.conditions.count() > 0 %}
+                <span class="glyphicon glyphicon-check" style="color:green;"></span> BasicExpression ({{task.conditions.count()}})
+              {% else %}
+                <span class="glyphicon glyphicon-wrench" style="color:red;"></span> Configure
+              {% endif %}
+              </a>
+            </td>
+            <td class="textcenter">
+              <a href="{{ url_for('admin.edit_task', id=task.id) }}" class="btn btn-info btn-xs">
+                <span class="glyphicon glyphicon-edit"></span> Edit
+              </a>
+            </td>
+            <td class="textcenter" style="width: 10px">
+              <a data-id="{{ task.id }}" onclick="ConfirmDelete(this)" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-trash"></span> Delete
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <h3> No tasks have been added. </h3>
+    <hr class="intro-divider">
+  {% endif %}
+    <a href="{{ url_for('admin.add_task') }}" class="btn btn-default btn-md">
+      <span class="glyphicon glyphicon-plus"></span> Add Task
+    </a>
+</div>
+</div>
+
+{% include 'includes/_delete_confirm.html' %}
+
+{% endblock %}

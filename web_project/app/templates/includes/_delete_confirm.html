@@ -1,0 +1,57 @@
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align:center;">
+        <h4 class="modal-title" id="deleteModalLabel">Are you sure you want to delete?</h4>
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+        <button id="confirmDelete" type="button" class="btn btn-danger btn-sm" onclick="Delete(this)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var flash_html = '<div id="page_alert" class="alert alert-info"><button type="button" class="close">&times;</button><p id="flash_message"></p></div>'
+$("#message-container").on('click', '.close', function()
+{
+   $(this).parent().hide();
+});
+
+function ConfirmDelete(elem) {
+    deleteId = $(elem).attr('data-id');
+    $("#confirmDelete").attr('data-id', deleteId);
+    $('#deleteModal').modal();
+}
+
+function Delete(elem) {
+    deleteId = $(elem).attr('data-id');
+    $('#deleteModal').modal('hide');
+    if (deleteId != undefined) {
+        $.ajax({
+            url: '/admin/{{ title|lower }}/delete/' + deleteId,
+            data: {
+                id: deleteId
+            },
+            type: 'POST',
+            success: function(response){
+                var item = "#row_" + deleteId;
+                $(item).fadeTo(400, 0, function () {
+                    $(this).remove();
+                    if (!$("#page_alert").length) {
+                        $("#message-container").html(flash_html);
+                    }
+                    $("#flash_message").html("Successfully deleted the {{ entity|lower }}");
+                    $("#page_alert").show();
+                });
+            },
+            error: function(error){
+                console.log(error);
+            }
+        });
+    }
+}
+</script>
+
